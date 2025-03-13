@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# Next.js example project to present React/Next.js optimization possibilities
+
+Example: React useCallback, useMemo, bundle analysis, code splitting, image, font, link components etc.
 
 ## Getting Started
 
