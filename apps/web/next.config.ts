@@ -3,6 +3,9 @@ import NextBundleAnalyzer from "@next/bundle-analyzer";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  images: {
+    formats: ['image/avif'/* , 'image/webp' */],
+  }
 };
 
 const withBundleAnalyzer = NextBundleAnalyzer({

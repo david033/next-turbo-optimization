@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 type BtnProps = {
@@ -13,6 +14,11 @@ const Btn: FC<BtnProps> = ({ handleClick, children, style }) => {
     <button onClick={handleClick} style={{ ...style, padding: '1rem' }}>{children}</button>
   );
 }
+
+const DynamicComponent = dynamic(() => import('./dynamic-comp'), {
+  loading: () => <p>Loading...</p>,
+  ssr: false,
+});
 
 const formulaOneDrivers = [
   'Lewis Hamilton',
@@ -52,14 +58,13 @@ const Client: React.FC = () => {
     console.log('Cached handle click function changed');
   }, [cachedHandleClick]);
 
-  const filterDrivers = useCallback((_keyword: string) => {
-    return formulaOneDrivers.filter(driver => driver.toLowerCase().includes(_keyword.toLowerCase()));
-  }, []);
+  const filterDrivers = useCallback(() => {
+    return formulaOneDrivers.filter(driver => driver.toLowerCase().includes(keyword.toLowerCase()));
+  }, [keyword]);
 
   const memoDrivers = useMemo(() => {
-    console.log('Filtering memo drivers');
-    return filterDrivers(keyword);
-  }, [filterDrivers, keyword]);
+    return filterDrivers();
+  }, [filterDrivers]);
 
   const handleKeywordChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(event.target.value);
@@ -67,11 +72,11 @@ const Client: React.FC = () => {
 
   return (
     <div>
-      <p>Click count: {clickCount}</p>
+      <p style={{ marginTop: '2rem' }}>Click count: {clickCount}</p>
       <br />
       <Btn handleClick={handleClick}>Uncached click handler</Btn><br /><br />
       <Btn handleClick={cachedHandleClick} style={{ backgroundColor: 'green', color: 'white' }}>Cached click handler</Btn><br /><br />
-      <Btn handleClick={triggerCacheInvalidation} style={{ backgroundColor: 'green', color: 'white' }}>Trigger cached fn render</Btn>
+      <Btn handleClick={triggerCacheInvalidation} style={{ backgroundColor: 'yellow' }}>Trigger cached fn render</Btn>
       <br />
       <br />
       <br />
@@ -100,10 +105,14 @@ const Client: React.FC = () => {
         </div>
       </div>
 
+      <p style={{ marginTop: '2rem' }}>
+        {clickCount > 0 && <DynamicComponent />}
+      </p>
+
       <br />
       <br />
       <br />
-    </div>
+    </div >
   );
 };
 
